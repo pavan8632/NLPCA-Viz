@@ -319,7 +319,7 @@ output$CutOff<-renderUI({
   if(is.null(nlpca())){
     return(NULL)
   }
-  numericInput("cutoff","Choose a value of significance for Loadings, between 0-1",.3,min=0,max=1)
+  numericInput("cutoff","Choose a value of significance for Loadings, between 0-1",0,min=0,max=1)
 })
 output$varexp<-renderUI({
   if(is.null(nlpca()))
