@@ -2,7 +2,8 @@ library(shiny)
 library(shinyjs)
 source('./SyndromicPlotFunctions.R')
 
-shinyUI(navbarPage('MCA/Mice Visualization',
+shinyUI(navbarPage('Non-linear PCA and Data Imputation',
+     theme=shinytheme('cerulean'),
      tabPanel('Input/Column Choosing',
               sidebarLayout(
                 sidebarPanel(
@@ -70,7 +71,7 @@ shinyUI(navbarPage('MCA/Mice Visualization',
 
                   )
               ),
-     tabPanel('MCA',
+     tabPanel('NLPCA/Visualization',
               fluidPage(
                 titlePanel('Where the magic happens, a NLPCA on click'),
                 tabsetPanel('Visualizations',

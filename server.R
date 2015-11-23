@@ -9,6 +9,7 @@ library(homals)
 library(gridExtra)
 library(png)
 library(grid)
+library('shinythemes')
 
 source('./SyndromicPlotFunctions.R')
 source("./FergPlot.R")
