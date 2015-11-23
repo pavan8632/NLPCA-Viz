@@ -1,5 +1,6 @@
 library(shiny)
 library(shinyjs)
+library(shinythemes)
 source('./SyndromicPlotFunctions.R')
 
 shinyUI(navbarPage('Non-linear PCA and Data Imputation',
@@ -50,7 +51,6 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
               fluidPage(
                 titlePanel('Parameters for imputation'),
                 fluidRow(
-                  column(3,
                          h4('If cat var present, imputeFAMD, else impute PCA'),
                          sliderInput('ncp','Number of dims to use',1,5,value=2),
                          selectInput('method','Method to use, regularized default to prevent overfitting',c('Regularized','EM'),selected='Regularized',multiple=FALSE),
@@ -58,18 +58,20 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
                          actionButton('FAMD','Impute FAMD')
                 
                         ),
-                  column(3,
+                fluidRow(
                          h4('This column is to use MCMC imputation'),
                          sliderInput('num.df','Number of imputed data frames',1,10,value=5),
                          selectInput('catmethod','Method to use for categorical var imputation',c('pmm','norm','norm.nob','norm.boot','mean','2l.norm','2lonly.mean','2lonly.norm','2lonly.pmm','quadratic','logreg','logreg.boot','polyreg','polr','lda','cart','rf','ri','sample','fastpmm'),selected='polr',multiple=FALSE),
                          selectInput('nummethod','Method to use for numerical var imputation', c('pmm','norm','norm.nob','norm.boot','mean','2l.norm','2lonly.mean','2lonly.norm','2lonly.pmm','quadratic','logreg','logreg.boot','polyreg','polr','lda','cart','rf','ri','sample','fastpmm'),selected='pmm',multiple=FALSE),
                          shinyjs::useShinyjs(),
-                         actionButton('mice','Impute MCMC'),
+                         actionButton('mice','Impute MCMC')
+                         ),
+                fluidRow(
                          tableOutput('imputedviewer')
-                         )
+                        )
                   )
 
-                  )
+                  
               ),
      tabPanel('NLPCA/Visualization',
               fluidPage(
