@@ -9,7 +9,6 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
               sidebarLayout(
                 sidebarPanel(
                 fileInput('file1','Choose Raw data to input', accept=c('text/csv,','.csv')),
-                checkboxInput('impute','Check here if you would like to impute your data',value=FALSE),
                 checkboxInput('allcol','Check here to use whole data set/every column')
                 
                 
@@ -34,7 +33,8 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
                 fluidRow(
                   column(5,
                          h3('Categorical Variables, select these first'),
-                         uiOutput('categorical')
+                         uiOutput('categorical'),
+                         checkboxInput('printData','Check this to print out your reorganized data table below',value=FALSE)
                          ),
                   column(5,
                          h3('Continuous Variables, select these second'),
@@ -42,7 +42,6 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
                          checkboxInput('restContinuous','Check this if the rest of the vars are continuous',value=TRUE)
                      )),
                 fluidRow(
-                      checkboxInput('printData','Check this to print out your reorganized data table below',value=FALSE),
                       tableOutput('dataviewer2'))
                         
                 )

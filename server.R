@@ -22,6 +22,7 @@ shinyServer(function(input,output,session,clientData){
     plot.background = element_blank()
   )
   memhomals<-memoise(homals)
+
   observe({
     catcols<-input$cat
     allcolname<-colnames(dataFrameCreator())
