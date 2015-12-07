@@ -29,6 +29,14 @@ shinyServer(function(input,output,session,clientData){
     updateSelectInput(session,'numerical',choices=setdiff(allcolname,catcols))
  
   })
+  observe({
+    restcat<-input$restCategorical
+    updateCheckboxInput(session,'restContinuous',value=!restcat)
+  })
+  observe({
+    restcont<-input$restContinuous
+    updateCheckboxInput(session,'restCategorical',value=!restcont)
+  })
  
 
   #get data input, clean data, determine imputability
@@ -101,6 +109,11 @@ shinyServer(function(input,output,session,clientData){
       return(NULL)
     df<-dataFrameCreator()
     df.cat<-df[input$cat]
+    if(input$restCategorical==TRUE)
+      df.cat<-df[,!names(df)%in% input$numerical]
+    else{
+      df.cat<-df[input$cat]
+    }
     if(input$restContinuous==TRUE)
       df.num<-df[,!names(df)%in% input$cat]
     else{

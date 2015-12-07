@@ -34,6 +34,7 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
                   column(5,
                          h3('Categorical Variables, select these first'),
                          uiOutput('categorical'),
+                         checkboxInput('restCategorical','Check this if the rest of the vars are categorical',value=FALSE),
                          checkboxInput('printData','Check this to print out your reorganized data table below',value=FALSE)
                          ),
                   column(5,
