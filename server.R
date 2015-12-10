@@ -355,19 +355,23 @@ output$downloadBplot<-downloadHandler(
   }
 )
 
-output$imputeDownload<-renderUI({
-  if(is.null(cvimputed()))
-    return(NULL)
-  
-  selectInput('imp2download','Select which dataframe to visualize',choices=cvimputed()[[2]])
-  
-})
+
 output$downloadImputed<-downloadHandler(
-  filename=function(){paste('ImputedData',toString(input$imp2download),'.csv',sep='')},
+  filename=paste('ImputedData','.zip',sep=''),
   content=function(file){
-    df<-nlpca()[[which(cvimputed()[[2]]%in%input$imp2download)]]
-    write.table(df,file)
-  }
+    tmpdir<-tempdir()
+    setwd(tempdir())
+    print(tempdir())
+    fs<-unlist(lapply(cvimputed()[[2]],function(x) paste('imputed_',x,'.csv',sep='')))
+    lapply(cvimputed()[[2]],function(x)
+      write.csv(listOfImputed()[[which(cvimputed()[[2]]%in%x)]],file=paste('imputed_',x,'.csv',sep=''),sep=',')
+      )
+    print(fs)
+    zip(zipfile=file,files=fs)
+    if(file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+  
+  },
+  contentType='application/zip'
   
 )
 

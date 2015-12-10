@@ -92,8 +92,7 @@ shinyUI(navbarPage('Non-linear PCA and Data Imputation',
                         ),
                 fluidRow(
                   column(3,
-                         uiOutput('imputeDownload'),
-                         downloadButton('downloadImputed','Download imputed dataset chosen above')
+                         downloadButton('downloadImputed','Download all imputed datasets')
                     
                   )
                   
