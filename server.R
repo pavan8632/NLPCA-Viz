@@ -10,6 +10,7 @@ library(gridExtra)
 library(png)
 library(grid)
 library(shinythemes)
+library(shinyBS)
 
 source('./SyndromicPlotFunctions.R')
 source("./FergPlot.R")
@@ -29,13 +30,20 @@ shinyServer(function(input,output,session,clientData){
     updateSelectInput(session,'numerical',choices=setdiff(allcolname,catcols))
  
   })
-  observe({
-    restcat<-input$restCategorical
-    updateCheckboxInput(session,'restContinuous',value=!restcat)
-  })
+ 
   observe({
     restcont<-input$restContinuous
-    updateCheckboxInput(session,'restCategorical',value=!restcont)
+    restcat<-input$restCategorical
+    if(restcont&&restcat){
+      createAlert(session,'alert','varAlert',title='Classification Error',content='Both rest categorical and rest continuous can not be checked',append=FALSE)
+      #updateCheckboxInput(session,'restCategorical',value=FALSE)
+      #updateCheckboxInput(session,'restContinuous',value=FALSE)
+    }
+    else{
+      closeAlert(session,'varAlert')
+      
+    }
+    
   })
  
 
@@ -68,7 +76,7 @@ shinyServer(function(input,output,session,clientData){
     df<-parsing()
     #fill the complete and incomplete columns
     complete.columns<-completeColNames(df)
-    selectInput('completecols','Choose columns w/out data missing',complete.columns,multiple=TRUE)
+    selectInput('completecols','Choose columns with no missing entries',complete.columns,multiple=TRUE)
 
     })
   output$SecondStep<-renderText({
@@ -85,7 +93,7 @@ shinyServer(function(input,output,session,clientData){
     df<-parsing()
     #fill the complete and incomplete columns
     incomplete.columns<-incompleteColNames(df)
-    selectInput('incompletecols','Choose columns w/out data missing',incomplete.columns,multiple=TRUE)
+    selectInput('incompletecols','Choose columns with missing data',incomplete.columns,multiple=TRUE)
     
   })
  
@@ -268,7 +276,6 @@ nlpca<-reactive({
 output$plot.function<-renderUI({
   choices<-c('Scores Plot'='objplot',
              'Scree Plot'='screeplot',
-             'Syndromic Plot'='syndromic',
              'Loadings Plot'='loadplot'
   )
   selectInput('plfx','Choose a function to plot/visualize',choices=choices)
