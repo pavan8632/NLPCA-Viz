@@ -1,32 +1,57 @@
 library(shiny)
 library(shinyjs)
 library(shinythemes)
+library(shinyBS)
 source('./SyndromicPlotFunctions.R')
 
 shinyUI(navbarPage('Non-linear PCA and Data Imputation',
      theme=shinytheme('cerulean'),
-     tabPanel('Input/Column Choosing',
-              sidebarLayout(
-                sidebarPanel(
-                fileInput('file1','Choose Raw data to input', accept=c('text/csv,','.csv')),
-                checkboxInput('allcol','Check here to use whole data set/every column')
+     tabPanel('Input Data and Manipulation',
+                 
+        tabsetPanel('View your original Data',
+                    tabPanel('View Original Data',
+                        sidebarLayout(
+                        sidebarPanel(
+                        fileInput('file1','Choose Raw data to input', accept=c('text/csv,','.csv')),
+                        checkboxInput('original','Check here to use original data'),
+                        h6('Following columns contain strings:'),
+                        textOutput('strings'),
+                        h6('Following columns had no variance'),
+                        textOutput('noVar'),
+                        h6('Following columns had only NA values'),
+                        textOutput('naCols'),
+                        
+                        h6('Following rows had only NA values'),
+                        textOutput('naRows')
+                        
+                        
+                        
+                        ),
+                
+              
+                        mainPanel(
+                        uiOutput('fxSelector'),
+                        dataTableOutput('initDataTable')
+                        )
+                        )),
+              tabPanel('Data Table for Analysis',
+                    sidebarLayout(
+                    sidebarPanel(
+                      uiOutput('CompleteColumnSelector'),
+                      uiOutput('IncompleteColumnSelector'),
+                      checkboxInput('allcol','Check here to use whole data set/every column')
                 
                 
                 ),
         
-              mainPanel(
-                
-                  
-                    uiOutput("FirstStep",align="left",style="color:blue"),
-                    uiOutput('CompleteColumnSelector'),
-                    uiOutput("SecondStep",align="left",style="color:red"),
-                    uiOutput('IncompleteColumnSelector'),
-                    tableOutput('dataviewer')
+                     mainPanel(
+                       h4('Choose columns from the left to create a final data table'),
+                       dataTableOutput('finalDataTable')
 
                 
               
               )
-     )),
+     )))),
      tabPanel('Column Classification',
               fluidPage(
                 titlePanel("Categorize between nominal, ordinal, categorical"),

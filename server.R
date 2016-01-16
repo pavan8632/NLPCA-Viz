@@ -11,6 +11,7 @@ library(png)
 library(grid)
 library(shinythemes)
 library(shinyBS)
+library(DT)
 
 source('./SyndromicPlotFunctions.R')
 source("./FergPlot.R")
@@ -46,27 +47,78 @@ shinyServer(function(input,output,session,clientData){
     
   })
  
-
+interactive<-reactive({
+  dataFile<-input$file1
+  if(is.null(dataFile))
+    return(NULL)
+  
+  data<-read.csv(dataFile$datapath,header=TRUE,sep=',',quote="'",row.names=NULL)
+  return(data)
+})
   #get data input, clean data, determine imputability
+  output$initDataTable<-renderDataTable(parsing())
+  output$finalDataTable<-renderDataTable(dataFrameCreator())
   parsing<-reactive({
-
     dataFile<-input$file1
     if(is.null(dataFile))
+      return(NULL)
+    if(is.null(interactive()))
       return(NULL)
     
     data<-read.csv(dataFile$datapath,header=TRUE,sep=',',quote="'",row.names=NULL)
    # Remove any columns with strings, and rows and columns with no values
-    data<-removeString(data)
-    data<-removeNACol(data)
-    data<-removeNArow(data)
-    data<-removeNoVary(data)
+    if(input$original)
+      return(data)
+
+    if('NA Col'%in%input$manip)
+      data<-removeNoVary(removeString(data))
+    if('NA Row'%in%input$manip)
+      data<-removeNACol(removeString(data))
+    if('No Vary'%in%input$manip)
+      data<-removeNArow(removeString(data))
+      
     return(data)
     })
-  output$FirstStep<-renderText({
-    if(input$allcol)
+  output$strings<-renderText({
+    dataFile<-input$file1
+    if(is.null(dataFile))
       return(NULL)
-    "First step is to choose complete columns for data set"
+    
+    paste(unlist(Strings(interactive())))
   })
+  output$noVar<-renderText({
+    dataFile<-input$file1
+    if(is.null(dataFile))
+      return(NULL)
+    if('No Vary'%in%input$manip){
+      print(NoVary(removeString(interactive())))
+    }
+  })
+  output$naCols<-renderUI({
+    dataFile<-input$file1
+    if(is.null(dataFile))
+      return(NULL)
+    if('NA Col'%in%input$manip){
+      print(NACol(interactive()))
+    }
+  })
+  output$naRows<-renderUI({
+    dataFile<-input$file1
+    if(is.null(dataFile))
+      return(NULL)
+    if('NA Row'%in%input$manip){
+      print(NArow(interactive()))
+    }
+  })
+  
+  
+  output$fxSelector<-renderUI({
+    if(input$original)
+      return(NULL)
+    checkboxGroupInput('manip',label=h5('Select functions to apply, data table will update'),choices=c('NA Col'='NA Col','NA Row'='NA Row','No Vary'='No Vary'),inline=TRUE)
+    
+  })
+  
   output$CompleteColumnSelector<-renderUI({
      if(input$allcol)
        return(NULL)
@@ -79,11 +131,7 @@ shinyServer(function(input,output,session,clientData){
     selectInput('completecols','Choose columns with no missing entries',complete.columns,multiple=TRUE)
 
     })
-  output$SecondStep<-renderText({
-    if(input$allcol)
-      return(NULL)
-    "Second step is to choose incomplete columns for data set"
-  })
+
   output$IncompleteColumnSelector<-renderUI({
     if(input$allcol)
       return(NULL)
@@ -102,7 +150,7 @@ shinyServer(function(input,output,session,clientData){
   dataFrameCreator<-reactive({
     if(is.null(parsing()))
       return(NULL)
-    if(input$allcol)
+    if(is.null(input$incompletecols)&&is.null(input$completecols))
       return(parsing())
     df<-parsing()
     col1<-input$incompletecols

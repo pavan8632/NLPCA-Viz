@@ -7,6 +7,9 @@ removeNACol <- function(df){
   df[ , colSums(is.na(df))!=nrow(df)]
   
 }
+NACol<-function(df){
+  colnames(df[,!colSums(is.na(df))!=nrow(df)])
+}
 # can it be imputed aka does it have complete rows?
 imputable<- function(df){
   sums=apply(a,1,is.na)
@@ -19,10 +22,16 @@ imputable<- function(df){
 removeNArow<-function(df){
   df[rowSums(is.na(df))+1!=ncol(df) , ]
 }
+NArow<-function(df){
+  rownames(df[!rowSums(is.na(df))+1!=ncol(df),])
+}
 
 removeString <-function(df){
   
   df[!sapply(df, is.factor)]
+}
+Strings<-function(df){
+  colnames(df[sapply(df,is.factor)])
 }
 
 completeColList<-function(df){
@@ -31,7 +40,10 @@ completeColList<-function(df){
 
 removeNoVary<-function(df){
     df[ ,apply(df, 2, var, na.rm=TRUE)!=0]
-  }
+}
+NoVary<-function(df){
+  colnames(df[,apply(df,2,var,na.rm=TRUE)==0])
+}
 
 completeColNames<-function(df){
   binary<-ifelse(completeColList(df)>0,1,0)
@@ -93,4 +105,5 @@ loadingextractor<-function(loadings,pc){
   mask<-grepl(x,colnames(loadings))
   return(loadings[mask])
 }
+
 
