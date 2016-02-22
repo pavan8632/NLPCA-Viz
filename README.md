@@ -1,5 +1,5 @@
 # NLPCA-Viz
-https://zenodo.org/badge/20544/pavan8632/NLPCA-Viz.svg
+![alt tag](https://zenodo.org/badge/20544/pavan8632/NLPCA-Viz.svg)
 
 This is a basic applicaiton meant to do data imputation and perform an Non-Linear Principal Component. This is an R Shiny Application that requires R and will install numerous dependencies to make run. Run the following to bring up the applet on your computer. 
 
